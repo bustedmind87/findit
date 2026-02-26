@@ -1,0 +1,69 @@
+<main class="home container" id="main-content" role="main" aria-labelledby="home-heading">
+  <h1 id="home-heading">FindIt</h1>
+  <p class="sr-only">FindIt - Help find lost and found items. Search through found items or report lost items.</p>
+
+  <section class="actions" aria-label="Report buttons">
+    <a routerLink="/report" class="btn btn-primary">Report Found Item</a>
+    <a routerLink="/report-lost" class="btn btn-success">Report Lost Item</a>
+  </section>
+
+  <section class="stats" aria-label="Site statistics for the last 30 days">
+    <div class="stat-tile" role="region" aria-label="Found items count">
+      <div class="stat-label">Found (30d)</div>
+      <div class="stat-value" aria-live="polite">{{displayValues.found30d}}</div>
+    </div>
+    <div class="stat-tile" role="region" aria-label="Lost items count">
+      <div class="stat-label">Lost (30d)</div>
+      <div class="stat-value" aria-live="polite">{{displayValues.lost30d}}</div>
+    </div>
+    <div class="stat-tile" role="region" aria-label="Pending items awaiting approval">
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" aria-live="polite">{{displayValues.pending}}</div>
+    </div>
+  </section>
+
+  <section class="hero" aria-label="Search for items">
+    <form class="search-form" (submit)="0" role="search" aria-label="Search found items">
+      <label class="sr-only" for="q">Search items</label>
+      <input id="q" class="form-control" type="search" placeholder="Search by keyword, category, or location" />
+      <div class="search-actions">
+        <select aria-label="Category" class="form-select">
+          <option value="">All categories</option>
+          <option>Apparel & Outerwear</option>
+          <option>Technology & Accessories</option>
+        </select>
+        <select aria-label="Location" class="form-select">
+          <option value="">All locations</option>
+          <option>Cafeteria</option>
+          <option>Library</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="recent-heading" class="recent">
+    <h2 id="recent-heading">Recent found items</h2>
+    <div class="grid">
+      <article class="card" tabindex="0" role="article" aria-label="Blue Hydro Flask, Cafeteria, Pending">
+        <div class="thumb" aria-hidden="true"></div>
+        <div class="card-body">
+          <h3 class="card-title">Blue Hydro Flask</h3>
+          <p class="meta">Cafeteria • Found 2026-02-01 • <span class="status status-pending">Pending</span></p>
+          <p class="desc">Stainless steel bottle with sticker near handle.</p>
+          <a class="btn btn-outline-primary" [routerLink]="['/items', 1]">View details</a>
+        </div>
+      </article>
+
+      <article class="card" tabindex="0" role="article" aria-label="Black Earbuds, Library, Approved">
+        <div class="thumb" aria-hidden="true"></div>
+        <div class="card-body">
+          <h3 class="card-title">Black Earbuds</h3>
+          <p class="meta">Library • Found 2026-02-05 • <span class="status status-approved">Approved</span></p>
+          <p class="desc">Pair of wireless earbuds in charging case.</p>
+          <a class="btn btn-outline-primary" [routerLink]="['/items', 2]">View details</a>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>

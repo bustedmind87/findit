@@ -1,0 +1,39 @@
+<main class="claim-form container" role="main" aria-labelledby="claim-heading">
+  <h1 id="claim-heading">Claim This Item</h1>
+  
+  <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-invalid]="form.invalid && form.touched">
+    <p class="help-text" id="claim-help">Please provide your information and any proof of ownership. Fields marked with <span class="required" aria-label="required">*</span> are required.</p>
+
+    <div class="form-group">
+      <label for="claimantName"><span class="required">*</span> Full Name</label>
+      <input id="claimantName" formControlName="claimantName" class="form-control" [attr.aria-invalid]="form.get('claimantName')?.invalid && form.get('claimantName')?.touched" aria-required="true" placeholder="Enter your full name" />
+      <div *ngIf="form.get('claimantName')?.invalid && form.get('claimantName')?.touched" class="error-message" role="alert">Name is required</div>
+    </div>
+
+    <div class="form-group">
+      <label for="claimantContact"><span class="required">*</span> Contact Information</label>
+      <input id="claimantContact" formControlName="claimantContact" class="form-control" [attr.aria-invalid]="form.get('claimantContact')?.invalid && form.get('claimantContact')?.touched" aria-required="true" placeholder="Email or phone number" aria-describedby="contact-help" />
+      <small id="contact-help" class="form-text text-muted">We'll use this to contact you about your claim</small>
+      <div *ngIf="form.get('claimantContact')?.invalid && form.get('claimantContact')?.touched" class="error-message" role="alert">Contact information is required</div>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Message or Proof of Ownership</label>
+      <textarea id="message" formControlName="message" class="form-control" rows="4" placeholder="Describe what makes this item yours or explain how you can prove ownership..." aria-describedby="message-help"></textarea>
+      <small id="message-help" class="form-text text-muted">Provide details that prove you own this item, such as unique markings, serial numbers, or the condition you found it in</small>
+    </div>
+
+    <div class="form-group">
+      <label for="proofUrl">Proof URL (optional)</label>
+      <input id="proofUrl" formControlName="proofUrl" class="form-control" type="url" placeholder="Link to receipt, photo, or other proof" aria-describedby="proof-help" />
+      <small id="proof-help" class="form-text text-muted">Link to a receipt, photo, or other evidence proving ownership</small>
+    </div>
+
+    <div class="actions mt-3">
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Submitting...' : 'Submit Claim' }}
+      </button>
+      <a class="btn btn-link" routerLink="/">Cancel</a>
+    </div>
+  </form>
+</main>

@@ -1,0 +1,25 @@
+<div class="dashboard">
+  <div class="tiles">
+    <div class="tile" role="button" tabindex="0" (click)="openReports('found')">
+      <div class="label">Found (30d)</div>
+      <div class="value">{{summary.found30d}}</div>
+    </div>
+    <div class="tile" role="button" tabindex="0" (click)="openReports('lost')">
+      <div class="label">Lost (30d)</div>
+      <div class="value">{{summary.lost30d}}</div>
+    </div>
+    <div class="tile">
+      <div class="label">Pending</div>
+      <div class="value">{{summary.pending}}</div>
+    </div>
+  </div>
+
+  <section class="chart-panel" aria-label="Category wise lost and found">
+    <canvas #categoryChart aria-label="Category wise lost and found chart"></canvas>
+  </section>
+
+  <section class="pending-list">
+    <h4>Pending Items</h4>
+    <!-- pending items list will be loaded via ItemsService in a full implementation -->
+  </section>
+</div>

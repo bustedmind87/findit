@@ -1,0 +1,41 @@
+<main class="qa-container" role="main" aria-labelledby="qa-heading">
+  <div class="container">
+    <h1 id="qa-heading">Frequently Asked Questions</h1>
+    <p class="qa-description">Find answers to common questions about using FindIt.</p>
+
+    <div class="qa-section">
+      <div 
+        *ngFor="let item of qaItems" 
+        class="qa-item"
+        [attr.aria-expanded]="item.isOpen"
+      >
+        <button 
+          class="qa-question"
+          (click)="toggleQA(item)"
+          [attr.aria-controls]="'answer-' + item.id"
+        >
+          <span class="question-text">{{ item.question }}</span>
+          <span class="toggle-icon" [class.open]="item.isOpen" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+        </button>
+        
+        <div 
+          *ngIf="item.isOpen"
+          [id]="'answer-' + item.id"
+          class="qa-answer"
+          role="region"
+        >
+          <p>{{ item.answer }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-contact">
+      <h2>Still have questions?</h2>
+      <p>Contact the school's Lost & Found office or speak with a staff member for additional help.</p>
+    </div>
+  </div>
+</main>

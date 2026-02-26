@@ -1,0 +1,59 @@
+<main class="login-container" role="main" aria-labelledby="login-heading">
+  <div class="login-card">
+    <h1 id="login-heading">Admin Login</h1>
+    <p class="login-description">Sign in with your admin credentials to access the dashboard.</p>
+
+    <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-invalid]="form.invalid && form.touched">
+      <div class="form-group">
+        <label for="username"><span class="required">*</span> Username</label>
+        <input 
+          id="username" 
+          formControlName="username" 
+          class="form-control" 
+          [attr.aria-invalid]="form.get('username')?.invalid && form.get('username')?.touched"
+          aria-required="true"
+          placeholder="Enter username"
+          autocomplete="username"
+        />
+        <div *ngIf="form.get('username')?.invalid && form.get('username')?.touched" class="error-message" role="alert">
+          Username is required
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password"><span class="required">*</span> Password</label>
+        <input 
+          id="password" 
+          formControlName="password" 
+          type="password"
+          class="form-control" 
+          [attr.aria-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          aria-required="true"
+          placeholder="Enter password"
+          autocomplete="current-password"
+        />
+        <div *ngIf="form.get('password')?.invalid && form.get('password')?.touched" class="error-message" role="alert">
+          Password is required
+        </div>
+      </div>
+
+      <div class="demo-credentials">
+        <p><strong>Demo Credentials:</strong></p>
+        <p>Username: <code>admin</code></p>
+        <p>Password: <code>admin123</code></p>
+      </div>
+
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Signing in...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="back-link">
+      <a routerLink="/">← Back to Home</a>
+    </p>
+  </div>
+</main>

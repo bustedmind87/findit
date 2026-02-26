@@ -1,0 +1,52 @@
+<main class="container report" role="main" aria-labelledby="report-heading">
+  <h1 id="report-heading">Update Lost Item</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate aria-describedby="report-help" [attr.aria-invalid]="form.invalid && form.touched">
+    <p id="report-help" class="help-text">Update the details of your lost item. Select the item you want to update and modify any information.</p>
+
+    <div class="form-group">
+      <label for="itemId"><span class="required">*</span> Select Lost Item</label>
+      <select id="itemId" formControlName="itemId" class="form-select" (change)="onItemSelected()" [attr.aria-invalid]="form.get('itemId')?.invalid && form.get('itemId')?.touched" aria-required="true">
+        <option value="">Select your lost item</option>
+        <option *ngFor="let item of lostItems" [value]="item.id">{{ item.title }} (Lost: {{ item.dateLost }})</option>
+      </select>
+      <div *ngIf="form.get('itemId')?.invalid && form.get('itemId')?.touched" class="error-message" role="alert">Please select an item</div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description" class="form-control" rows="4" placeholder="Update the item description..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="location"><span class="required">*</span> Location Lost</label>
+      <select id="location" formControlName="location" class="form-select" [attr.aria-invalid]="form.get('location')?.invalid && form.get('location')?.touched" aria-required="true">
+        <option value="">Select location</option>
+        <option>Cafeteria</option>
+        <option>Library</option>
+        <option>Playground</option>
+      </select>
+      <div *ngIf="form.get('location')?.invalid && form.get('location')?.touched" class="error-message" role="alert">Please select a location</div>
+    </div>
+
+    <div class="form-group">
+      <label for="dateLost"><span class="required">*</span> Date Lost</label>
+      <input id="dateLost" formControlName="dateLost" type="date" class="form-control" [attr.aria-invalid]="form.get('dateLost')?.invalid && form.get('dateLost')?.touched" aria-required="true" />
+      <div *ngIf="form.get('dateLost')?.invalid && form.get('dateLost')?.touched" class="error-message" role="alert">Please select a date</div>
+    </div>
+
+    <div class="form-group">
+      <label for="photos">Additional Photos</label>
+      <input id="photos" type="file" (change)="onFilesSelected($event)" multiple accept="image/*" class="form-control" aria-describedby="photo-help" />
+      <small id="photo-help" class="form-text text-muted">Upload additional photos if available.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="reporterContact">Your Contact (Optional)</label>
+      <input id="reporterContact" formControlName="reporterContact" type="text" class="form-control" placeholder="Your phone or email in case admin needs to reach you" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Item</button>
+    <a routerLink="/" class="btn btn-outline">Cancel</a>
+  </form>
+</main>

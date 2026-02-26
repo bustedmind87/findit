@@ -1,0 +1,6 @@
+.dashboard { padding: 16px; }
+.tiles { display:flex; gap:12px; margin-bottom:16px; }
+.tile { flex:1; background:#fff; border:1px solid #e6e6e6; padding:12px; border-radius:8px; cursor:pointer; }
+.tile .label { color:#666; font-size:13px; }
+.tile .value { font-size:22px; font-weight:700; margin-top:6px; }
+.chart-panel { background:#fff; padding:12px; border-radius:8px; border:1px solid #e6e6e6; }

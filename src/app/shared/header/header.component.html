@@ -1,0 +1,23 @@
+<header class="site-header" role="banner">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <a routerLink="/" class="brand"><span class="brand-icon">🔍</span> FindIt</a>
+    </div>
+    <nav aria-label="Primary navigation">
+      <a routerLink="/" class="nav-link" data-tooltip="Go to Home page">Home</a>
+      <a routerLink="/report" class="nav-link" data-tooltip="Report a found item">Report Found</a>
+      <a routerLink="/report-lost" class="nav-link" data-tooltip="Report a lost item">Report Lost</a>
+      <a routerLink="/qa" class="nav-link" data-tooltip="View frequently asked questions">Q&A</a>
+      <a *ngIf="currentUser$ | async as user" routerLink="/admin/dashboard" class="nav-link" data-tooltip="Admin Dashboard">Admin</a>
+    </nav>
+    <div class="auth-section">
+      <ng-container *ngIf="currentUser$ | async as user; else notLoggedIn">
+        <span class="user-name">{{ user.username }}</span>
+        <button class="btn-sign-out" (click)="logout()" data-tooltip="Sign out">Sign Out</button>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <a routerLink="/login" class="btn-sign-in" data-tooltip="Sign in as admin">Sign In</a>
+      </ng-template>
+    </div>
+  </div>
+</header>

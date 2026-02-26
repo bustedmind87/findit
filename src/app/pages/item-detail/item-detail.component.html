@@ -1,0 +1,33 @@
+<!-- src/app/pages/item-detail/item-detail.component.html -->
+<main class="container" role="main" id="main-content">
+  <ng-container *ngIf="loading" role="status" aria-live="polite">Loading item details</ng-container>
+
+  <ng-container *ngIf="!loading && item; else notFound">
+    <h1>{{ item.title }}</h1>
+    <div class="meta">{{ item.categoryName }}  {{ item.location }}  {{ item.dateFound }} 
+      <span [ngClass]="{
+        'status-approved': item.status === 'APPROVED',
+        'status-pending': item.status === 'PENDING',
+        'status-rejected': item.status === 'REJECTED'
+      }">{{ item.status }}</span>
+    </div>
+
+    <div class="media">
+      <div class="photos" role="region" aria-label="Lost or found item photos">
+        <img *ngFor="let p of (item.photos || []); let i = index" 
+             [src]="p" 
+             [alt]="'Photo ' + (i + 1) + ' of ' + item.title" 
+             class="photo-thumb" />
+        <div *ngIf="!(item.photos && item.photos.length)" class="photo-placeholder">No photos available</div>
+      </div>
+      <div class="details">
+        <p>{{ item.description }}</p>
+        <button class="btn btn-primary" (click)="openClaim()">Claim this item</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #notFound>
+    <p role="status">Item not found.</p>
+  </ng-template>
+</main>
