@@ -40,3 +40,79 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+secret.properties
+secrets/
+.secrets/
+
+# Backend Build Output
+/backend/target/
+/backend/build/
+/backend/.gradle/
+/backend/.idea/
+backend/*.iml
+/backend/out/
+
+# Spring Boot
+/backend/**/classes/
+/backend/**/generated-sources/
+/backend/**/maven-status/
+/backend/**/*.jar
+/backend/.m2/
+
+# IDE Backend
+/backend/.classpath
+/backend/.project
+/backend/.settings/
+/backend/.factorypath
+
+# File uploads (local development only)
+uploads/
+/tmp/uploads/
+
+# Local database
+*.db
+*.sqlite
+*.h2.db
+
+# Application logs
+logs/
+
+# Maven
+.m2/
+
+# Gradle
+.gradle/
+build/
+
+# Netlify
+.netlify/
+
+# Vercel
+.vercel/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# SSH keys and certificates
+*.key
+*.pem
+*.p12
+.ssh/
+
+# Coverage
+/coverage
+.nyc_output/
+
+# Test results
+/test-results/

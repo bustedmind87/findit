@@ -3,7 +3,8 @@
   border-radius: 12px;
   border: 3px solid #003d7a;
   padding: 2rem;
-  max-width: 600px;
+  max-width: 800px; /* more width for multi-column layout */
+  width: 90%;
   margin: 2rem auto;
   box-shadow: 0 4px 16px rgba(0, 61, 122, 0.12);
 
@@ -164,4 +165,27 @@ input[type="file"]::file-selector-button {
   cursor: not-allowed;
   background-color: #6c757d;
   border-color: #6c757d;
+}
+
+/* group fields into horizontal grid */
+.form-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.col-left,
+.col-right {
+  flex: 1 1 300px;
+}
+
+/* also keep previous row utility for other groupings */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  flex: 1 1 200px;
 }

@@ -1,0 +1,10 @@
+<main class="container">
+  <h1>My Items</h1>
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="!loading && items.length === 0">You have not uploaded any items yet.</div>
+  <ul *ngIf="!loading && items.length>0" class="item-list">
+    <li *ngFor="let it of items">
+      <strong>{{ it.title }}</strong> — <em>{{ it.type }}</em> — <span>Status: {{ it.status || 'PENDING' }}</span>
+    </li>
+  </ul>
+</main>

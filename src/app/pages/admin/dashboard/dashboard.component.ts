@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterModule]
 })
 export class DashboardComponent implements AfterViewInit {
-  summary: any = { totalItems:0, found30d:0, lost30d:0, pending:0 };
+  summary: any = { totalItems: 0, pendingItems: 0, approvedItems: 0, rejectedItems: 0, totalUsers: 0 };
   chart: Chart | null = null;
   @ViewChild('categoryChart') canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -24,46 +24,49 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   loadSummary() {
-    this.stats.getSummary(30).subscribe(res => this.summary = res);
+    this.stats.getStats().subscribe({
+      next: (res: any) => {
+        this.summary = res;
+      },
+      error: (err) => {
+        console.error('Failed to load stats', err);
+      }
+    });
   }
 
   loadCategoryChart() {
-    this.stats.getCategoryStats(30).subscribe(data => {
-      const labels = data.map((d:any) => d.category);
-      const found = data.map((d:any) => d.foundCount);
-      const lost  = data.map((d:any) => d.lostCount);
+    this.stats.getCategoryStats().subscribe({
+      next: (data: any) => {
+        const labels = data.map((d: any) => `Category ${d.categoryId}`);
+        const counts = data.map((d: any) => d.count);
 
-      const config: ChartConfiguration = {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Found', data: found, backgroundColor: '#117A65' },
-            { label: 'Lost',  data: lost,  backgroundColor: '#D68910' }
-          ]
-        },
-        options: {
-          responsive: true,
-          interaction: { mode: 'index', intersect: false },
-          plugins: { legend: { position: 'top' } },
-          onClick: (evt, elements) => {
-            if (elements.length) {
-              const idx = (elements[0] as any).index;
-              const category = labels[idx];
-              this.router.navigate(['/admin/reports'], { queryParams: { category, days: 30 }});
-            }
+        const config: ChartConfiguration = {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              { label: 'Items Count', data: counts, backgroundColor: '#117A65' }
+            ]
           },
-          scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
-        }
-      };
+          options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { position: 'top' } },
+            scales: { y: { beginAtZero: true } }
+          }
+        };
 
-      const ctx = this.canvas.nativeElement.getContext('2d')!;
-      if (this.chart) this.chart.destroy();
-      this.chart = new Chart(ctx, config);
+        const ctx = this.canvas.nativeElement.getContext('2d')!;
+        if (this.chart) this.chart.destroy();
+        this.chart = new Chart(ctx, config);
+      },
+      error: (err) => {
+        console.error('Failed to load category stats', err);
+      }
     });
   }
 
   openReports(filter: string) {
-    this.router.navigate(['/admin/reports'], { queryParams: { filter }});
+    this.router.navigate(['/admin/reports'], { queryParams: { filter } });
   }
 }

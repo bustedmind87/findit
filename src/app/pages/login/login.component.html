@@ -1,13 +1,18 @@
 <main class="login-container" role="main" aria-labelledby="login-heading">
   <div class="login-card">
-    <h1 id="login-heading">Admin Login</h1>
-    <p class="login-description">Sign in with your admin credentials to access the dashboard.</p>
-
-    <div *ngIf="errorMessage" class="alert alert-error" role="alert">
-      {{ errorMessage }}
+    <div class="illustration">
+      <h2>Welcome to FindIt</h2>
+      <p>Securely sign in to report or track your items.</p>
     </div>
+    <div class="form-section">
+      <h1 id="login-heading">Sign In</h1>
+      <p class="login-description">Sign in to report items or manage your uploads.</p>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-invalid]="form.invalid && form.touched">
+      <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-invalid]="form.invalid && form.touched">
       <div class="form-group">
         <label for="username"><span class="required">*</span> Username</label>
         <input 
@@ -54,6 +59,9 @@
 
     <p class="back-link">
       <a routerLink="/">← Back to Home</a>
+      &nbsp;·&nbsp;
+      <a routerLink="/signup">Create an account</a>
     </p>
-  </div>
+    </div> <!-- .form-section -->
+  </div> <!-- .login-card -->
 </main>

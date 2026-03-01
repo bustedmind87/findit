@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ItemsService } from '../../core/items.service';
+import { AuthService } from '../../core/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -20,6 +21,7 @@ export class ReportFoundComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private items: ItemsService,
+    private auth: AuthService,
     private router: Router
   ) {}
 
@@ -49,6 +51,7 @@ export class ReportFoundComponent implements OnInit {
       alert('Please fill required fields and upload at least one photo.');
       return;
     }
+    const user = this.auth.getCurrentUser();
     const fd = new FormData();
     fd.append('item', new Blob([JSON.stringify({
       title: this.form.value.title,
@@ -57,7 +60,8 @@ export class ReportFoundComponent implements OnInit {
       location: this.form.value.location,
       dateFound: this.form.value.dateFound,
       reporterContact: this.form.value.reporterContact,
-      type: 'FOUND'
+      type: 'FOUND',
+      reporterId: user?.id
     })], { type: 'application/json' }));
     this.files.forEach(f => fd.append('photos', f, f.name));
     this.items.create(fd).subscribe({

@@ -8,12 +8,17 @@ import { ReportsComponent } from './pages/admin/reports/reports.component';
 import { ClaimComponent } from './pages/claim/claim.component';
 import { QAComponent } from './pages/qa/qa.component';
 import { LoginComponent } from './pages/login/login.component';
+import { SignupComponent } from './pages/signup/signup.component';
+import { MyItemsComponent } from './pages/my-items/my-items.component';
 import { adminGuard } from './core/auth.guard';
+import { userGuard } from './core/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'report', component: ReportFoundComponent },
-  { path: 'report-lost', component: ReportLostComponent },
+  { path: 'report', component: ReportFoundComponent, canActivate: [userGuard] },
+  { path: 'report-lost', component: ReportLostComponent, canActivate: [userGuard] },
+  { path: 'signup', component: SignupComponent },
+  { path: 'my-items', component: MyItemsComponent, canActivate: [userGuard] },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'items/:id/claim', component: ClaimComponent },
   { path: 'qa', component: QAComponent },
