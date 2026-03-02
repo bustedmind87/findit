@@ -4,7 +4,7 @@
   # Build command - generates the dist folder
   command = "npm run build"
   # Output directory where the build artifacts are
-  publish = "dist/lostfound-frontend"
+  publish = "dist/lostfound-frontend/browser"
   # Function directory if you have serverless functions
   functions = "netlify/functions"
 
