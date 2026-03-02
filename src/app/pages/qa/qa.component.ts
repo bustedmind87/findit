@@ -31,7 +31,7 @@ export class QAComponent implements OnInit {
       next: (items: any) => {
         // Map backend items to component format
         this.qaItems = (Array.isArray(items) ? items : (items?.content || []))
-          .map(item => ({
+          .map((item: any) => ({
             ...item,
             isOpen: false
           }));
