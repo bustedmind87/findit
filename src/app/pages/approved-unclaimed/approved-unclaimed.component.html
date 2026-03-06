@@ -1,0 +1,19 @@
+<main class="container approved-page">
+  <h1>Approved & Unclaimed Items</h1>
+  <p>Only admin-approved items are listed here. Once claimed by a user and approved by admin, they are removed.</p>
+
+  <div *ngIf="loading">Loading items...</div>
+  <p *ngIf="!loading && items.length === 0">No approved and unclaimed items available right now.</p>
+
+  <section *ngIf="!loading && items.length > 0" class="items-grid">
+    <article *ngFor="let item of items" class="item-card">
+      <h2>{{ item.title }}</h2>
+      <p class="meta">{{ item.location || 'Unknown location' }} <span *ngIf="item.dateFound">• Found {{ item.dateFound }}</span></p>
+      <p>{{ item.description || 'No description provided.' }}</p>
+      <div class="actions">
+        <a class="btn btn-outline-primary" [routerLink]="['/items', item.id]">View details</a>
+        <button class="btn btn-primary" (click)="requestClaim(item.id)">Request claim</button>
+      </div>
+    </article>
+  </section>
+</main>

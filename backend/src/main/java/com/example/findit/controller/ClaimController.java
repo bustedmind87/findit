@@ -4,7 +4,9 @@ import com.example.findit.model.Claim;
 import com.example.findit.service.ClaimService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -17,9 +19,13 @@ public class ClaimController {
     }
 
     @PostMapping
-    public ResponseEntity<Claim> create(@RequestBody Claim claim) {
-        Claim created = claimService.create(claim);
-        return ResponseEntity.ok(created);
+    public ResponseEntity<?> create(@RequestBody Claim claim) {
+        try {
+            Claim created = claimService.create(claim);
+            return ResponseEntity.ok(created);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping
@@ -46,14 +52,18 @@ public class ClaimController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Claim> updateStatus(@PathVariable Long id, 
-                                              @RequestBody java.util.Map<String, String> body) {
+    public ResponseEntity<?> updateStatus(@PathVariable Long id,
+                                          @RequestBody java.util.Map<String, String> body) {
         String status = body.get("status");
-        Claim updated = claimService.updateStatus(id, status);
-        if (updated != null) {
-            return ResponseEntity.ok(updated);
+        try {
+            Claim updated = claimService.updateStatus(id, status);
+            if (updated != null) {
+                return ResponseEntity.ok(updated);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

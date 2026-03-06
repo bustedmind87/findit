@@ -6,10 +6,14 @@ export interface Item {
   categoryName?: string;
   location?: string;
   dateFound?: string;
+  dateLost?: string;
   type?: 'FOUND' | 'LOST';
   status?: 'PENDING' | 'APPROVED' | 'CLAIMED' | 'RETURNED' | 'REJECTED';
   priorityFlags?: string;
   photos?: string[];
   reporterContact?: string;
   createdAt?: string;
+  claimedById?: number;
+  claimedByName?: string;
+  syncStatus?: 'SYNCED' | 'LOCAL_PENDING_SYNC';
 }

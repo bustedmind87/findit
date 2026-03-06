@@ -15,6 +15,10 @@ public class Claim {
     
     @Column(nullable = false)
     private Long claimerId;
+
+    private String claimerName;
+
+    private String claimerContact;
     
     @Column(length = 1000)
     private String description;
@@ -34,6 +38,12 @@ public class Claim {
     
     public Long getClaimerId() { return claimerId; }
     public void setClaimerId(Long claimerId) { this.claimerId = claimerId; }
+
+    public String getClaimerName() { return claimerName; }
+    public void setClaimerName(String claimerName) { this.claimerName = claimerName; }
+
+    public String getClaimerContact() { return claimerContact; }
+    public void setClaimerContact(String claimerContact) { this.claimerContact = claimerContact; }
     
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

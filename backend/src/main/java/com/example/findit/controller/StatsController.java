@@ -5,9 +5,11 @@ import com.example.findit.service.ItemService;
 import com.example.findit.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +45,27 @@ public class StatsController {
     }
 
     @GetMapping("/summary")
-    public Map<String, Object> summary() {
+        public Map<String, Object> summary(@RequestParam(defaultValue = "30") int days) {
         List<Item> all = itemService.findAll();
-        long total = all.size();
-        long found = all.stream().filter(i -> "FOUND".equals(i.getType())).count();
-        long lost = all.stream().filter(i -> "LOST".equals(i.getType())).count();
-        return Map.<String,Object>of("total", total, "found", found, "lost", lost);
+        int safeDays = Math.max(days, 1);
+        LocalDate since = LocalDate.now().minusDays(safeDays);
+
+        long found = all.stream()
+            .filter(i -> "FOUND".equalsIgnoreCase(i.getType()))
+            .filter(i -> i.getDateFound() != null && !i.getDateFound().isBefore(since))
+            .count();
+
+        long lost = all.stream()
+            .filter(i -> "LOST".equalsIgnoreCase(i.getType()))
+            .filter(i -> i.getDateLost() != null && !i.getDateLost().isBefore(since))
+            .count();
+
+        return Map.<String,Object>of(
+            "days", safeDays,
+            "found", found,
+            "lost", lost,
+            "pending", all.stream().filter(i -> "PENDING".equalsIgnoreCase(i.getStatus())).count()
+        );
     }
 
     @GetMapping("/category")

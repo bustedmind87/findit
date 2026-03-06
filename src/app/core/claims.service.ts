@@ -4,17 +4,29 @@ import { Observable } from 'rxjs';
 
 export interface ClaimPayload {
   itemId: number;
-  claimantName: string;
-  claimantContact?: string;
-  message?: string;
-  proofUrl?: string;
+  claimerId: number;
+  claimerName: string;
+  claimerContact?: string;
+  description?: string;
+}
+
+export interface ClaimRecord {
+  id: number;
+  itemId: number;
+  claimerId: number;
+  claimerName?: string;
+  claimerContact?: string;
+  description?: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ClaimsService {
   constructor(private api: ApiService) {}
 
-  createClaim(payload: ClaimPayload): Observable<any> {
+  createClaim(payload: ClaimPayload): Observable<ClaimRecord> {
     return this.api.post('/claims', payload);
   }
 
@@ -23,7 +35,7 @@ export class ClaimsService {
     return this.api.put(`/claims/${claimId}/status`, { status });
   }
 
-  listClaims(params?: any) {
-    return this.api.get<any>('/claims', params);
+  listClaims(params?: any): Observable<ClaimRecord[]> {
+    return this.api.get<ClaimRecord[]>('/claims', params);
   }
 }

@@ -1,17 +1,23 @@
 <div class="dashboard">
   <div class="tiles">
     <div class="tile" role="button" tabindex="0" (click)="openReports('found')">
-      <div class="label">Found (30d)</div>
+      <div class="label">Found ({{ selectedDays }}d)</div>
       <div class="value">{{summary.found30d}}</div>
     </div>
     <div class="tile" role="button" tabindex="0" (click)="openReports('lost')">
-      <div class="label">Lost (30d)</div>
+      <div class="label">Lost ({{ selectedDays }}d)</div>
       <div class="value">{{summary.lost30d}}</div>
     </div>
     <div class="tile">
       <div class="label">Pending</div>
       <div class="value">{{summary.pending}}</div>
     </div>
+  </div>
+  <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+    <label for="periodDays"><strong>Period:</strong></label>
+    <select id="periodDays" [value]="selectedDays" (change)="onPeriodChange(($any($event.target)).value)">
+      <option *ngFor="let days of periodOptions" [value]="days">Last {{ days }} days</option>
+    </select>
   </div>
 
   <section class="chart-panel" aria-label="Category wise lost and found">

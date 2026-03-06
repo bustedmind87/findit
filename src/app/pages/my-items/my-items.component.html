@@ -1,10 +1,51 @@
 <main class="container">
-  <h1>My Items</h1>
+  <h1>{{ isAdmin ? 'Admin - Item Review' : 'My Items' }}</h1>
   <div *ngIf="loading">Loading...</div>
-  <div *ngIf="!loading && items.length === 0">You have not uploaded any items yet.</div>
+  <div *ngIf="!loading && items.length === 0">{{ isAdmin ? 'No items found.' : 'You have not uploaded any items yet.' }}</div>
   <ul *ngIf="!loading && items.length>0" class="item-list">
     <li *ngFor="let it of items">
-      <strong>{{ it.title }}</strong> — <em>{{ it.type }}</em> — <span>Status: {{ it.status || 'PENDING' }}</span>
+      <div class="row-main">
+        <div class="item-main">
+          <div class="thumb-wrap">
+            <img *ngIf="thumbnail(it); else noThumb" [src]="thumbnail(it)" [alt]="it.title + ' image'" class="thumb" />
+            <ng-template #noThumb>
+              <div class="thumb placeholder">NO IMAGE</div>
+            </ng-template>
+          </div>
+          <div>
+          <strong>{{ it.title }}</strong> — <em>{{ it.type }}</em> — <span>Status: {{ it.status || 'PENDING' }}</span>
+          <span class="sync-badge" [ngClass]="syncBadgeClass(it)">{{ syncLabel(it) }}</span>
+          <div class="meta">Found at: {{ it.location || 'Unknown location' }}</div>
+          <div class="meta">Category: {{ categoryLabel(it) }}</div>
+          <div *ngIf="showClaimedBy(it)" class="claimed-text">Claimed by: {{ showClaimedBy(it) }}</div>
+          </div>
+        </div>
+        <div class="actions" *ngIf="canManageItem(it)">
+          <button class="btn btn-success" (click)="approveItem(it.id)" [disabled]="isItemProcessing(it.id)">Approve</button>
+          <button class="btn btn-danger" (click)="rejectItem(it.id)" [disabled]="isItemProcessing(it.id)">Reject</button>
+        </div>
+      </div>
     </li>
   </ul>
+
+  <section *ngIf="isAdmin" class="admin-claims">
+    <h2>Pending Claim Requests</h2>
+    <p *ngIf="pendingClaims.length === 0">No pending claim requests.</p>
+    <ul *ngIf="pendingClaims.length > 0" class="item-list">
+      <li *ngFor="let claim of pendingClaims">
+        <div class="row-main">
+          <div>
+            <strong>{{ itemTitleMap[claim.itemId] || ('Item #' + claim.itemId) }}</strong>
+            <div>Requested by: {{ claim.claimerName || ('User #' + claim.claimerId) }}</div>
+            <div *ngIf="claim.claimerContact">Contact: {{ claim.claimerContact }}</div>
+            <div *ngIf="claim.description">Reason: {{ claim.description }}</div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-success" (click)="reviewClaim(claim.id, 'APPROVED')" [disabled]="isClaimProcessing(claim.id)">Approve Claim</button>
+            <button class="btn btn-danger" (click)="reviewClaim(claim.id, 'REJECTED')" [disabled]="isClaimProcessing(claim.id)">Reject Claim</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
 </main>

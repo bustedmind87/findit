@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "concurrently -k -n FRONTEND,BACKEND -c cyan,green \"ng serve\" \"cd backend && mvn spring-boot:run\"",
+    "start:open": "concurrently -k -n FRONTEND,BACKEND -c cyan,green \"ng serve --open\" \"cd backend && mvn spring-boot:run\"",
+    "start:frontend": "ng serve",
+    "start:backend": "cd backend && mvn spring-boot:run",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -34,6 +37,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "concurrently": "^9.2.1",
     "typescript": "~5.7.2"
   }
 }

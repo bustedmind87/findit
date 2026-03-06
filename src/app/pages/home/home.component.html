@@ -23,19 +23,28 @@
   </section>
 
   <section class="hero" aria-label="Search for items">
-    <form class="search-form" (submit)="0" role="search" aria-label="Search found items">
+    <form class="search-form" (submit)="applySearch($event)" role="search" aria-label="Search items">
       <label class="sr-only" for="q">Search items</label>
-      <input id="q" class="form-control" type="search" placeholder="Search by keyword, category, or location" />
+      <input
+        id="q"
+        class="form-control"
+        type="search"
+        placeholder="Search by keyword, category, or location"
+        [value]="searchQuery"
+        (input)="onKeywordChange(($any($event.target)).value)"
+      />
       <div class="search-actions">
-        <select aria-label="Category" class="form-select">
+        <select aria-label="Category" class="form-select" [value]="selectedCategory" (change)="onCategoryChange(($any($event.target)).value)">
           <option value="">All categories</option>
-          <option>Apparel & Outerwear</option>
-          <option>Technology & Accessories</option>
+          <option value="Apparel & Outerwear">Apparel & Outerwear</option>
+          <option value="Technology & Accessories">Technology & Accessories</option>
+          <option value="Hydration & Food Containers">Hydration & Food Containers</option>
         </select>
-        <select aria-label="Location" class="form-select">
+        <select aria-label="Location" class="form-select" [value]="selectedLocation" (change)="onLocationChange(($any($event.target)).value)">
           <option value="">All locations</option>
-          <option>Cafeteria</option>
-          <option>Library</option>
+          <option value="Cafeteria">Cafeteria</option>
+          <option value="Library">Library</option>
+          <option value="Playground">Playground</option>
         </select>
         <button class="btn btn-primary" type="submit">Search</button>
       </div>
@@ -43,27 +52,72 @@
   </section>
 
   <section aria-labelledby="recent-heading" class="recent">
-    <h2 id="recent-heading">Recent found items</h2>
-    <div class="grid">
-      <article class="card" tabindex="0" role="article" aria-label="Blue Hydro Flask, Cafeteria, Pending">
-        <div class="thumb" aria-hidden="true"></div>
-        <div class="card-body">
-          <h3 class="card-title">Blue Hydro Flask</h3>
-          <p class="meta">Cafeteria • Found 2026-02-01 • <span class="status status-pending">Pending</span></p>
-          <p class="desc">Stainless steel bottle with sticker near handle.</p>
-          <a class="btn btn-outline-primary" [routerLink]="['/items', 1]">View details</a>
-        </div>
-      </article>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <h2 id="recent-heading">Recent found items</h2>
+      <a routerLink="/approved-unclaimed" class="btn btn-outline-primary">View all approved & unclaimed</a>
+    </div>
 
-      <article class="card" tabindex="0" role="article" aria-label="Black Earbuds, Library, Approved">
-        <div class="thumb" aria-hidden="true"></div>
+    <div class="grid" *ngIf="filteredFoundItems.length > 0; else noRecentItems">
+      <article class="card" *ngFor="let item of filteredFoundItems" tabindex="0" role="article">
+        <img
+          *ngIf="item.photos && item.photos.length > 0; else foundThumbPlaceholder"
+          class="thumb"
+          [src]="item.photos[0]"
+          [alt]="item.title + ' image'"
+        />
+        <ng-template #foundThumbPlaceholder>
+          <div class="thumb thumb-placeholder" aria-hidden="true">NO IMAGE</div>
+        </ng-template>
         <div class="card-body">
-          <h3 class="card-title">Black Earbuds</h3>
-          <p class="meta">Library • Found 2026-02-05 • <span class="status status-approved">Approved</span></p>
-          <p class="desc">Pair of wireless earbuds in charging case.</p>
-          <a class="btn btn-outline-primary" [routerLink]="['/items', 2]">View details</a>
+          <h3 class="card-title">{{ item.title }}</h3>
+          <p class="meta">
+            {{ item.location || 'Unknown location' }}
+            <span *ngIf="item.dateFound"> • Found {{ item.dateFound }}</span>
+            • <span class="status status-approved">APPROVED</span>
+          </p>
+          <p class="desc">{{ item.description || 'No description available.' }}</p>
+          <a class="btn btn-outline-primary" [routerLink]="['/items', item.id]">View details</a>
         </div>
       </article>
     </div>
+
+    <ng-template #noRecentItems>
+      <p>No found items match your search.</p>
+    </ng-template>
+  </section>
+
+  <section aria-labelledby="recent-lost-heading" class="recent">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <h2 id="recent-lost-heading">Recent lost items</h2>
+      <a routerLink="/report-lost" class="btn btn-outline-primary">Report a lost item</a>
+    </div>
+
+    <div class="grid" *ngIf="filteredLostItems.length > 0; else noRecentLostItems">
+      <article class="card" *ngFor="let item of filteredLostItems" tabindex="0" role="article">
+        <img
+          *ngIf="item.photos && item.photos.length > 0; else lostThumbPlaceholder"
+          class="thumb"
+          [src]="item.photos[0]"
+          [alt]="item.title + ' image'"
+        />
+        <ng-template #lostThumbPlaceholder>
+          <div class="thumb thumb-placeholder" aria-hidden="true">NO IMAGE</div>
+        </ng-template>
+        <div class="card-body">
+          <h3 class="card-title">{{ item.title }}</h3>
+          <p class="meta">
+            {{ item.location || 'Unknown location' }}
+            <span *ngIf="item.dateLost"> • Lost {{ item.dateLost }}</span>
+            • <span class="status status-approved">APPROVED</span>
+          </p>
+          <p class="desc">{{ item.description || 'No description available.' }}</p>
+          <a class="btn btn-outline-primary" [routerLink]="['/items', item.id]">View details</a>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #noRecentLostItems>
+      <p>No lost items match your search.</p>
+    </ng-template>
   </section>
 </main>

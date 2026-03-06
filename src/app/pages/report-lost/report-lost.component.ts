@@ -61,7 +61,7 @@ export class ReportLostComponent implements OnInit {
       dateLost: this.form.value.dateLost,
       reporterContact: this.form.value.reporterContact,
       type: 'LOST',
-      reporterId: user?.id
+      reporterId: user?.id ? Number(user.id) : null
     })], { type: 'application/json' }));
     this.files.forEach(f => fd.append('photos', f, f.name));
     this.items.create(fd).subscribe({

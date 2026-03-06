@@ -22,7 +22,12 @@
       </div>
       <div class="details">
         <p>{{ item.description }}</p>
-        <button class="btn btn-primary" (click)="openClaim()">Claim this item</button>
+        <button class="btn btn-primary" (click)="openClaim()" [disabled]="!canClaim(item)">Claim this item</button>
+        <p *ngIf="item.status === 'CLAIMED'" class="status-approved">
+          Claimed by: {{ claimedByLabel(item) }}
+        </p>
+        <p *ngIf="item.status === 'PENDING'" class="status-pending">This item is still pending admin approval.</p>
+        <p *ngIf="item.status === 'REJECTED'" class="status-rejected">This item was rejected and cannot be claimed.</p>
       </div>
     </div>
   </ng-container>

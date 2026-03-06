@@ -5,12 +5,6 @@
     <p class="help-text" id="claim-help">Please provide your information and any proof of ownership. Fields marked with <span class="required" aria-label="required">*</span> are required.</p>
 
     <div class="form-group">
-      <label for="claimantName"><span class="required">*</span> Full Name</label>
-      <input id="claimantName" formControlName="claimantName" class="form-control" [attr.aria-invalid]="form.get('claimantName')?.invalid && form.get('claimantName')?.touched" aria-required="true" placeholder="Enter your full name" />
-      <div *ngIf="form.get('claimantName')?.invalid && form.get('claimantName')?.touched" class="error-message" role="alert">Name is required</div>
-    </div>
-
-    <div class="form-group">
       <label for="claimantContact"><span class="required">*</span> Contact Information</label>
       <input id="claimantContact" formControlName="claimantContact" class="form-control" [attr.aria-invalid]="form.get('claimantContact')?.invalid && form.get('claimantContact')?.touched" aria-required="true" placeholder="Email or phone number" aria-describedby="contact-help" />
       <small id="contact-help" class="form-text text-muted">We'll use this to contact you about your claim</small>

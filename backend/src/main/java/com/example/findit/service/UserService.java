@@ -20,6 +20,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Optional<User> authenticate(String username, String password) {
         return userRepository.findByUsername(username)
                 .filter(u -> u.getPassword().equals(password));

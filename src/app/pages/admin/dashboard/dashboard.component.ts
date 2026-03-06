@@ -12,7 +12,9 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterModule]
 })
 export class DashboardComponent implements AfterViewInit {
-  summary: any = { totalItems: 0, pendingItems: 0, approvedItems: 0, rejectedItems: 0, totalUsers: 0 };
+  summary: any = { found30d: 0, lost30d: 0, pending: 0, days: 30 };
+  periodOptions = [7, 30, 90, 180, 365];
+  selectedDays = 30;
   chart: Chart | null = null;
   @ViewChild('categoryChart') canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -24,7 +26,7 @@ export class DashboardComponent implements AfterViewInit {
   }
 
   loadSummary() {
-    this.stats.getStats().subscribe({
+    this.stats.getSummary(this.selectedDays).subscribe({
       next: (res: any) => {
         this.summary = res;
       },
@@ -32,6 +34,12 @@ export class DashboardComponent implements AfterViewInit {
         console.error('Failed to load stats', err);
       }
     });
+  }
+
+  onPeriodChange(value: string) {
+    const parsed = Number(value);
+    this.selectedDays = Number.isFinite(parsed) && parsed > 0 ? parsed : 30;
+    this.loadSummary();
   }
 
   loadCategoryChart() {

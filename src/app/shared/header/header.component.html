@@ -1,18 +1,31 @@
 <header class="site-header" role="banner">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+  <div class="container header-shell">
     <div>
-      <a routerLink="/" class="brand"><span class="brand-icon">🔍</span> FindIt</a>
+      <a routerLink="/" class="brand" (click)="closeMenu()"><span class="brand-icon">🔍</span> FindIt</a>
     </div>
-    <nav aria-label="Primary navigation">
-      <a routerLink="/" class="nav-link" data-tooltip="Go to Home page">Home</a>
+    <button
+      class="menu-toggle"
+      type="button"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="menuOpen"
+      aria-controls="primary-nav"
+      aria-label="Toggle navigation menu"
+    >
+      {{ menuOpen ? 'Close' : 'Menu' }}
+    </button>
+
+    <nav id="primary-nav" aria-label="Primary navigation" class="primary-nav" [class.open]="menuOpen">
+      <a routerLink="/" class="nav-link" data-tooltip="Go to Home page" (click)="closeMenu()">Home</a>
       <ng-container *ngIf="currentUser$ | async as user; else publicLinks">
-        <a routerLink="/report" class="nav-link" data-tooltip="Report a found item">Report Found</a>
-        <a routerLink="/report-lost" class="nav-link" data-tooltip="Report a lost item">Report Lost</a>
-        <a routerLink="/my-items" class="nav-link">My Items ({{ myCount }})</a>
-        <a *ngIf="user.role === 'admin'" routerLink="/admin/dashboard" class="nav-link" data-tooltip="Admin Dashboard">Admin</a>
+        <a routerLink="/report" class="nav-link" data-tooltip="Report a found item" (click)="closeMenu()">Report Found</a>
+        <a routerLink="/report-lost" class="nav-link" data-tooltip="Report a lost item" (click)="closeMenu()">Report Lost</a>
+        <a routerLink="/qa" class="nav-link" data-tooltip="View frequently asked questions" (click)="closeMenu()">Q&A</a>
+        <a routerLink="/approved-unclaimed" class="nav-link" (click)="closeMenu()">Browse Approved</a>
+        <a routerLink="/my-items" class="nav-link" (click)="closeMenu()">My Items ({{ myCount }})</a>
+        <a *ngIf="user.role === 'admin'" routerLink="/admin/dashboard" class="nav-link" data-tooltip="Admin Dashboard" (click)="closeMenu()">Admin</a>
       </ng-container>
       <ng-template #publicLinks>
-        <a routerLink="/qa" class="nav-link" data-tooltip="View frequently asked questions">Q&A</a>
+        <a routerLink="/qa" class="nav-link" data-tooltip="View frequently asked questions" (click)="closeMenu()">Q&A</a>
       </ng-template>
     </nav>
     <div class="auth-section">

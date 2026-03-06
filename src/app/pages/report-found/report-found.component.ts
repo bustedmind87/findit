@@ -61,7 +61,7 @@ export class ReportFoundComponent implements OnInit {
       dateFound: this.form.value.dateFound,
       reporterContact: this.form.value.reporterContact,
       type: 'FOUND',
-      reporterId: user?.id
+      reporterId: user?.id ? Number(user.id) : null
     })], { type: 'application/json' }));
     this.files.forEach(f => fd.append('photos', f, f.name));
     this.items.create(fd).subscribe({

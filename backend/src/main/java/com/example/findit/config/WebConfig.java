@@ -9,17 +9,14 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-            .allowedOrigins(
+            // With allowCredentials(true), do not use allowedOrigins("*").
+            // Use explicit origins and wildcard host patterns via allowedOriginPatterns.
+            .allowedOriginPatterns(
                 "http://localhost:4200",
                 "http://localhost:3000",
                 "http://127.0.0.1:4200",
-                // Netlify deployment URLs - update these with your actual domains
-                "https://*.netlify.app",  // Matches all Netlify preview deployments
-                "https://*.netlify.live", // Netlify live domain
-                // Your custom domain (uncomment and update)
-                // "https://yourdomain.com",
-                // "https://www.yourdomain.com"
-                "*" // Warning: Use only for development, NOT for production
+                "https://*.netlify.app",
+                "https://*.netlify.live"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
             .allowedHeaders("*")

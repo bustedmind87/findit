@@ -10,6 +10,7 @@ import { QAComponent } from './pages/qa/qa.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { MyItemsComponent } from './pages/my-items/my-items.component';
+import { ApprovedUnclaimedComponent } from './pages/approved-unclaimed/approved-unclaimed.component';
 import { adminGuard } from './core/auth.guard';
 import { userGuard } from './core/auth.guard';
 
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'report-lost', component: ReportLostComponent, canActivate: [userGuard] },
   { path: 'signup', component: SignupComponent },
   { path: 'my-items', component: MyItemsComponent, canActivate: [userGuard] },
+  { path: 'approved-unclaimed', component: ApprovedUnclaimedComponent },
   { path: 'items/:id', component: ItemDetailComponent },
   { path: 'items/:id/claim', component: ClaimComponent },
   { path: 'qa', component: QAComponent },

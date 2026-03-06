@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ClaimsService } from '../../core/claims.service';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-claim',
@@ -19,6 +20,7 @@ export class ClaimComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private claims: ClaimsService,
+    private auth: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -31,7 +33,6 @@ export class ClaimComponent implements OnInit {
       });
     }
     this.form = this.fb.group({
-      claimantName: ['', Validators.required],
       claimantContact: ['', Validators.required],
       message: [''],
       proofUrl: ['']
@@ -44,12 +45,27 @@ export class ClaimComponent implements OnInit {
       return;
     }
     this.submitting = true;
+    const user = this.auth.getCurrentUser();
+    if (!user) {
+      alert('Please sign in first.');
+      this.submitting = false;
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.auth.isAdmin()) {
+      alert('Admin cannot claim items.');
+      this.submitting = false;
+      this.router.navigate(['/my-items']);
+      return;
+    }
+
     const payload = {
       itemId: this.itemId,
-      claimantName: this.form.value.claimantName,
-      claimantContact: this.form.value.claimantContact,
-      message: this.form.value.message,
-      proofUrl: this.form.value.proofUrl
+      claimerId: Number(user.id),
+      claimerName: user.username,
+      claimerContact: this.form.value.claimantContact,
+      description: [this.form.value.message, this.form.value.proofUrl].filter(Boolean).join(' | ')
     };
     this.claims.createClaim(payload).subscribe({
       next: () => {
@@ -57,8 +73,8 @@ export class ClaimComponent implements OnInit {
         this.submitting = false;
         this.router.navigate(['/']); // or close modal
       },
-      error: () => {
-        alert('Failed to submit claim. Try again.');
+      error: (err) => {
+        alert(err?.error?.error || 'Failed to submit claim. Try again.');
         this.submitting = false;
       }
     });
