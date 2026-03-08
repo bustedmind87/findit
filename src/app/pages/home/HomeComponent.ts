@@ -17,14 +17,19 @@ export class HomeComponent implements OnInit {
   summary: any = { totalItems: 0, found30d: 0, lost30d: 0, pending: 0 };
   displayValues: any = { found30d: 0, lost30d: 0, pending: 0 };
   isAnimating = false;
+  allFoundItems: Item[] = [];
+  allLostItems: Item[] = [];
   recentFoundItems: Item[] = [];
   recentLostItems: Item[] = [];
   filteredFoundItems: Item[] = [];
   filteredLostItems: Item[] = [];
+  titleSuggestions: Item[] = [];
+  searchingTitles = false;
 
   searchQuery = '';
   selectedCategory = '';
   selectedLocation = '';
+  private titleSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   private readonly categoryMap: Record<number, string> = {
     1: 'Apparel & Outerwear',
@@ -49,13 +54,18 @@ export class HomeComponent implements OnInit {
       event.preventDefault();
     }
 
-    this.filteredFoundItems = this.recentFoundItems.filter(item => this.matchesSearch(item));
-    this.filteredLostItems = this.recentLostItems.filter(item => this.matchesSearch(item));
+    const foundMatches = this.allFoundItems.filter(item => this.matchesSearch(item));
+    const lostMatches = this.allLostItems.filter(item => this.matchesSearch(item));
+
+    const hasFilters = this.hasActiveSearchFilters();
+    this.filteredFoundItems = hasFilters ? foundMatches : foundMatches.slice(0, 8);
+    this.filteredLostItems = hasFilters ? lostMatches : lostMatches.slice(0, 8);
   }
 
   onKeywordChange(value: string) {
     this.searchQuery = value;
     this.applySearch();
+    this.searchTitlesFromDb();
   }
 
   onCategoryChange(value: string) {
@@ -118,33 +128,83 @@ export class HomeComponent implements OnInit {
   }
 
   loadRecentFoundItems() {
-    this.itemsService.listApprovedUnclaimedFound().subscribe({
+    this.itemsService.list({ type: 'FOUND', syncedOnly: true }).subscribe({
       next: (items) => {
-        this.recentFoundItems = [...items]
-          .sort((a, b) => (b.id || 0) - (a.id || 0))
-          .slice(0, 8);
+        this.allFoundItems = [...items]
+          .filter(item => {
+            const status = (item?.status || '').toUpperCase();
+            return status === 'APPROVED' || status === 'CLAIMED';
+          })
+          .sort((a, b) => (b.id || 0) - (a.id || 0));
+        this.recentFoundItems = [...this.allFoundItems].slice(0, 8);
         this.applySearch();
       },
       error: () => {
+        this.allFoundItems = [];
         this.recentFoundItems = [];
+        this.filteredFoundItems = [];
         this.applySearch();
       }
     });
   }
 
   loadRecentLostItems() {
-    this.itemsService.list({ type: 'LOST', status: 'APPROVED' }).subscribe({
+    this.itemsService.list({ type: 'LOST', syncedOnly: true }).subscribe({
       next: (items) => {
-        this.recentLostItems = [...items]
-          .sort((a, b) => (b.id || 0) - (a.id || 0))
-          .slice(0, 8);
+        this.allLostItems = [...items]
+          .filter(item => {
+            const status = (item?.status || '').toUpperCase();
+            return status === 'APPROVED' || status === 'CLAIMED';
+          })
+          .sort((a, b) => (b.id || 0) - (a.id || 0));
+        this.recentLostItems = [...this.allLostItems].slice(0, 8);
         this.applySearch();
       },
       error: () => {
+        this.allLostItems = [];
         this.recentLostItems = [];
+        this.filteredLostItems = [];
         this.applySearch();
       }
     });
+  }
+
+  private hasActiveSearchFilters(): boolean {
+    return !!(this.searchQuery.trim() || this.selectedCategory || this.selectedLocation);
+  }
+
+  onSuggestionSelected() {
+    this.titleSuggestions = [];
+  }
+
+  private searchTitlesFromDb() {
+    if (this.titleSearchTimer) {
+      clearTimeout(this.titleSearchTimer);
+    }
+
+    const keyword = this.searchQuery.trim();
+    if (keyword.length < 3) {
+      this.searchingTitles = false;
+      this.titleSuggestions = [];
+      return;
+    }
+
+    this.titleSearchTimer = setTimeout(() => {
+      this.searchingTitles = true;
+      this.itemsService.list({ q: keyword, syncedOnly: true }).subscribe({
+        next: (items) => {
+          this.titleSuggestions = [...items]
+            .filter(item => !!item?.id)
+            .sort((a, b) => (b.id || 0) - (a.id || 0))
+            .slice(0, 8);
+          this.searchingTitles = false;
+        },
+        error: () => {
+          this.titleSuggestions = [];
+          this.searchingTitles = false;
+        }
+      });
+    }, 250);
   }
 
   private matchesSearch(item: Item): boolean {
@@ -169,5 +229,17 @@ export class HomeComponent implements OnInit {
     if (item.categoryName) return item.categoryName;
     if (item.categoryId && this.categoryMap[item.categoryId]) return this.categoryMap[item.categoryId];
     return '';
+  }
+
+  statusLabel(item: Item): string {
+    return (item?.status || 'PENDING').toUpperCase();
+  }
+
+  statusClass(item: Item): string {
+    const status = this.statusLabel(item);
+    if (status === 'CLAIMED') return 'status-claimed';
+    if (status === 'REJECTED') return 'status-rejected';
+    if (status === 'PENDING') return 'status-pending';
+    return 'status-approved';
   }
 }

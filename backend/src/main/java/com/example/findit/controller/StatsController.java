@@ -3,6 +3,8 @@ package com.example.findit.controller;
 import com.example.findit.model.Item;
 import com.example.findit.service.ItemService;
 import com.example.findit.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/stats")
 public class StatsController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatsController.class);
     private final ItemService itemService;
     private final UserService userService;
     
@@ -28,6 +31,7 @@ public class StatsController {
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getStats() {
+        LOGGER.info("BEGIN StatsController.getStats");
         List<Item> all = itemService.findAll();
         Map<String, Object> stats = new HashMap<>();
         
@@ -41,11 +45,13 @@ public class StatsController {
             "LOST", all.stream().filter(i -> "LOST".equals(i.getType())).count()
         ));
         
+        LOGGER.info("END StatsController.getStats totalItems={} totalUsers={}", all.size(), userService.findAll().size());
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/summary")
         public Map<String, Object> summary(@RequestParam(defaultValue = "30") int days) {
+        LOGGER.info("BEGIN StatsController.summary days={}", days);
         List<Item> all = itemService.findAll();
         int safeDays = Math.max(days, 1);
         LocalDate since = LocalDate.now().minusDays(safeDays);
@@ -60,21 +66,26 @@ public class StatsController {
             .filter(i -> i.getDateLost() != null && !i.getDateLost().isBefore(since))
             .count();
 
-        return Map.<String,Object>of(
+        Map<String, Object> result = Map.<String,Object>of(
             "days", safeDays,
             "found", found,
             "lost", lost,
             "pending", all.stream().filter(i -> "PENDING".equalsIgnoreCase(i.getStatus())).count()
         );
+        LOGGER.info("END StatsController.summary days={} found={} lost={}", safeDays, found, lost);
+        return result;
     }
 
     @GetMapping("/category")
     public List<Map<String,Object>> categoryStats() {
+        LOGGER.info("BEGIN StatsController.categoryStats");
         List<Item> all = itemService.findAll();
-        return all.stream()
+        List<Map<String,Object>> result = all.stream()
                 .collect(Collectors.groupingBy(Item::getCategoryId, Collectors.counting()))
                 .entrySet().stream()
                 .map(e -> Map.<String,Object>of("categoryId", e.getKey(), "count", e.getValue()))
                 .collect(Collectors.toList());
+        LOGGER.info("END StatsController.categoryStats categories={}", result.size());
+        return result;
     }
 }

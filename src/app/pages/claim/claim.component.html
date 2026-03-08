@@ -3,6 +3,8 @@
   
   <form [formGroup]="form" (ngSubmit)="submit()" [attr.aria-invalid]="form.invalid && form.touched">
     <p class="help-text" id="claim-help">Please provide your information and any proof of ownership. Fields marked with <span class="required" aria-label="required">*</span> are required.</p>
+    <p *ngIf="checkingAvailability" class="help-text" role="status" aria-live="polite">Checking item availability...</p>
+    <p *ngIf="claimBlockedReason" class="error-message" role="alert">{{ claimBlockedReason }}</p>
 
     <div class="form-group">
       <label for="claimantContact"><span class="required">*</span> Contact Information</label>
@@ -24,7 +26,7 @@
     </div>
 
     <div class="actions mt-3">
-      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting">
+      <button class="btn btn-primary" type="submit" [disabled]="form.invalid || submitting || checkingAvailability || !!claimBlockedReason">
         {{ submitting ? 'Submitting...' : 'Submit Claim' }}
       </button>
       <a class="btn btn-link" routerLink="/">Cancel</a>

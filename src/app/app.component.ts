@@ -12,7 +12,7 @@ import { LoadingService } from './core/loading.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'FindIt';
+  title = 'EBHS Lost & Found';
 
   constructor(private router: Router, private loadingService: LoadingService) {}
 

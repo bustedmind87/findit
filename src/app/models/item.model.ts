@@ -15,5 +15,6 @@ export interface Item {
   createdAt?: string;
   claimedById?: number;
   claimedByName?: string;
+  claimedAt?: string;
   syncStatus?: 'SYNCED' | 'LOCAL_PENDING_SYNC';
 }

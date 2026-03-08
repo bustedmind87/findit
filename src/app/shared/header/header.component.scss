@@ -54,6 +54,22 @@
   animation: searchPulse 2s ease-in-out infinite;
 }
 
+.brand-text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-text span:first-child {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.brand-text span:last-child {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 @keyframes searchPulse {
   0%, 100% {
     transform: scale(1);

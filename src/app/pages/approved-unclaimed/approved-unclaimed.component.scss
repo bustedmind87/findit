@@ -2,28 +2,63 @@
   padding-top: 16px;
 }
 
-.items-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
+.table-wrap {
   margin-top: 16px;
+  overflow-x: auto;
 }
 
-.item-card {
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 860px;
+  background: #fff;
   border: 1px solid #e3e6ea;
   border-radius: 10px;
-  padding: 14px;
-  background: #fff;
 }
 
-.meta {
-  color: #4f5d6b;
-  font-size: 0.95rem;
+.items-table th,
+.items-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9edf2;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.items-table thead th {
+  background: #f7f9fc;
+  font-size: 0.92rem;
+}
+
+.state-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.state-available {
+  background: #e6f4ea;
+  color: #146c2e;
+}
+
+.state-pending {
+  background: #fff4d6;
+  color: #8a6200;
+}
+
+.state-claimed {
+  background: #dceeff;
+  color: #0f4c8a;
+}
+
+.state-rejected {
+  background: #fde8e8;
+  color: #9f2222;
 }
 
 .actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 12px;
 }

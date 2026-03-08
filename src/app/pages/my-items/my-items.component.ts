@@ -20,6 +20,11 @@ export class MyItemsComponent implements OnInit {
   processingItemIds: number[] = [];
   processingClaimIds: number[] = [];
   isAdmin = false;
+  private readonly categoryMap: Record<number, string> = {
+    1: 'Apparel & Outerwear',
+    2: 'Technology & Accessories',
+    3: 'Hydration & Food Containers'
+  };
 
   constructor(
     private itemsService: ItemsService,
@@ -142,6 +147,9 @@ export class MyItemsComponent implements OnInit {
 
   categoryLabel(item: any): string {
     if (item?.categoryName) return item.categoryName;
+    if (item?.categoryId != null && this.categoryMap[Number(item.categoryId)]) {
+      return this.categoryMap[Number(item.categoryId)];
+    }
     if (item?.categoryId != null) return `Category ${item.categoryId}`;
     return 'Uncategorized';
   }
@@ -151,14 +159,6 @@ export class MyItemsComponent implements OnInit {
       return item.photos[0];
     }
     return '';
-  }
-
-  syncLabel(item: any): string {
-    return item?.syncStatus === 'LOCAL_PENDING_SYNC' ? 'Local pending sync' : 'Synced';
-  }
-
-  syncBadgeClass(item: any): string {
-    return item?.syncStatus === 'LOCAL_PENDING_SYNC' ? 'sync-local' : 'sync-ok';
   }
 }
 

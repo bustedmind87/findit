@@ -127,6 +127,60 @@
   align-items: center;
 }
 
+.title-suggestions {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.suggestion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d8e2f1;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.suggestion-list li + li {
+  border-top: 1px solid #ecf1f8;
+}
+
+.suggestion-list a {
+  display: block;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: #173a67;
+}
+
+.suggestion-list a:hover,
+.suggestion-list a:focus-visible {
+  background: #f3f8ff;
+  outline: none;
+}
+
+.suggestion-meta {
+  color: #4f5d6b;
+  font-size: 0.86rem;
+  margin-left: 4px;
+}
+
+.suggestion-hint {
+  margin: 0;
+  color: #4f5d6b;
+  font-size: 0.92rem;
+}
+
+.section-action-btn {
+  min-width: 220px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-found-message {
+  margin-bottom: 1rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -177,6 +231,16 @@
   font-weight: 600;
 }
 
+.status-claimed {
+  color: #117A65;
+  font-weight: 600;
+}
+
+.status-rejected {
+  color: #b42318;
+  font-weight: 600;
+}
+
 .status-pending {
   color: #D68910;
   font-weight: 600;
@@ -211,6 +275,11 @@
   .search-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .section-action-btn {
+    width: 100%;
+    min-width: 0;
   }
 
   .card {

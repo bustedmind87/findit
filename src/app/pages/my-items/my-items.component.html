@@ -14,7 +14,6 @@
           </div>
           <div>
           <strong>{{ it.title }}</strong> — <em>{{ it.type }}</em> — <span>Status: {{ it.status || 'PENDING' }}</span>
-          <span class="sync-badge" [ngClass]="syncBadgeClass(it)">{{ syncLabel(it) }}</span>
           <div class="meta">Found at: {{ it.location || 'Unknown location' }}</div>
           <div class="meta">Category: {{ categoryLabel(it) }}</div>
           <div *ngIf="showClaimedBy(it)" class="claimed-text">Claimed by: {{ showClaimedBy(it) }}</div>

@@ -35,28 +35,6 @@ h1 { margin: 16px 0; }
 	font-size: 0.95rem;
 }
 
-.sync-badge {
-	display: inline-block;
-	margin-left: 8px;
-	padding: 2px 8px;
-	border-radius: 999px;
-	font-size: 0.78rem;
-	font-weight: 600;
-	vertical-align: middle;
-}
-
-.sync-ok {
-	background: #e8f5e9;
-	color: #1b5e20;
-	border: 1px solid #c8e6c9;
-}
-
-.sync-local {
-	background: #fff8e1;
-	color: #8d6e00;
-	border: 1px solid #ffe08a;
-}
-
 .row-main {
 	display: flex;
 	justify-content: space-between;

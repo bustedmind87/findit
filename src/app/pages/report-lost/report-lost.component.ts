@@ -1,6 +1,6 @@
 // src/app/pages/report-lost/report-lost.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ItemsService } from '../../core/items.service';
 import { AuthService } from '../../core/auth.service';
 import { Router } from '@angular/router';
@@ -17,6 +17,7 @@ import { RouterModule } from '@angular/router';
 export class ReportLostComponent implements OnInit {
   form!: FormGroup;
   files: File[] = [];
+  maxDate = '';
 
   constructor(
     private fb: FormBuilder,
@@ -26,15 +27,38 @@ export class ReportLostComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.maxDate = this.getTodayDateString();
+
     this.form = this.fb.group({
       title: ['', Validators.required],
       description: [''],
       categoryId: [null, Validators.required],
       location: ['', Validators.required],
-      dateLost: ['', Validators.required],
+      dateLost: ['', [Validators.required, this.noFutureDateValidator()]],
       photos: [null],
       reporterContact: ['']
     });
+  }
+
+  private getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private noFutureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const rawValue = control.value;
+      if (!rawValue) return null;
+
+      const selected = new Date(`${rawValue}T00:00:00`);
+      const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      return selected.getTime() > todayStart.getTime() ? { futureDate: true } : null;
+    };
   }
 
   onFilesSelected(event: Event) {

@@ -56,6 +56,9 @@ export class ItemsService {
     if (params?.unclaimed === true || params?.unclaimed === 'true') {
       filtered = filtered.filter(i => !i.claimedById);
     }
+    if (params?.syncedOnly === true || params?.syncedOnly === 'true') {
+      filtered = filtered.filter(i => (i?.syncStatus || '').toUpperCase() === 'SYNCED');
+    }
     return filtered;
   }
 
@@ -97,9 +100,21 @@ export class ItemsService {
     );
   }
 
+  // Claim flow should only use backend truth, never local fallback.
+  getFromBackend(id: number) {
+    return this.api.get<Item>(`/items/${id}`).pipe(
+      map(item => this.normalizeBackendItem(item))
+    );
+  }
+
   create(formData: FormData) {
     return this.api.post<Item>('/items', formData).pipe(
-      catchError(() => {
+      catchError((apiErr) => {
+        // Fallback to local storage only when backend is unreachable (network/proxy error).
+        if (apiErr?.status && apiErr.status !== 0) {
+          return throwError(() => apiErr);
+        }
+
         const blob = formData.get('item') as Blob | null;
         if (!blob) return throwError(() => new Error('No item payload'));
         // read blob text and store locally
@@ -151,7 +166,7 @@ export class ItemsService {
   }
 
   listApprovedUnclaimedFound() {
-    return this.list({ type: 'FOUND', status: 'APPROVED', unclaimed: true });
+    return this.list({ type: 'FOUND', status: 'APPROVED', unclaimed: true, syncedOnly: true });
   }
 
   delete(id: number) {

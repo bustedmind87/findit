@@ -29,12 +29,25 @@ export class QAComponent implements OnInit {
   loadQA() {
     this.qaService.list().subscribe({
       next: (items: any) => {
-        // Map backend items to component format
-        this.qaItems = (Array.isArray(items) ? items : (items?.content || []))
+        const backendItems = (Array.isArray(items) ? items : (items?.content || []))
           .map((item: any) => ({
             ...item,
             isOpen: false
           }));
+
+        if (backendItems.length >= 7) {
+          this.qaItems = backendItems.slice(0, 7);
+        } else {
+          const defaults = this.defaultQAItems();
+          const merged = [...backendItems];
+          for (const fallback of defaults) {
+            if (merged.length >= 7) break;
+            const exists = merged.some(item => item.question === fallback.question);
+            if (!exists) merged.push(fallback);
+          }
+          this.qaItems = merged.slice(0, 7);
+        }
+
         this.loading = false;
       },
       error: (err) => {
@@ -46,59 +59,48 @@ export class QAComponent implements OnInit {
     });
   }
 
-  private useDefaultQA() {
-    this.qaItems = [
+  private defaultQAItems(): QAItem[] {
+    return [
+      {
+        question: 'What is EBHS Lost & Found used for?',
+        answer: 'EBHS Lost & Found helps students and staff report lost items, post found items, and submit claims. It centralizes updates so everyone can track item status in one place.',
+        isOpen: false
+      },
       {
         question: 'How do I report a found item?',
-        answer: 'To report a found item, click on "Report Found" in the navigation menu. Fill in the item details including title, description, category, location, date found, and upload at least one clear photo. Submit the form and an admin will review it for approval.',
+        answer: 'Go to Report Found, fill in the item details, choose category and location, select the found date, and upload at least one photo. Your submission is then sent for admin review.',
         isOpen: false
       },
       {
-        question: 'What should I include in a lost item report?',
-        answer: 'When reporting a lost item, include as much detail as possible: the item\'s color, brand, condition, any unique markings or identifying features, where you last saw it, and approximately when you lost it. The more details you provide, the better our chances of finding it.',
+        question: 'How do I report a lost item?',
+        answer: 'Go to Report Lost and provide a clear title, description, category, location, and lost date. Add a photo if available to improve the chance of matching your item.',
         isOpen: false
       },
       {
-        question: 'How do I claim an item I found?',
-        answer: 'If you found an item listed on FindIt, click "View Details" on the item card, then click "Claim this item". Fill in your information and provide proof of ownership. Describe what makes this item yours (serial numbers, unique markings, condition, etc.) to help admins verify your claim.',
-        isOpen: false
-      },
-      {
-        question: 'How long are items kept in FindIt?',
-        answer: 'Items in FindIt are kept for up to 30 days. If an item is not claimed within this period, it will be removed from the system. We recommend checking regularly or reporting your lost item to increase the chances of finding it quickly.',
-        isOpen: false
-      },
-      {
-        question: 'Who has access to my contact information?',
-        answer: 'Contact information is confidential and only visible to administrators. Your phone number or email is never shared publicly. Only admins can use it to contact you regarding your lost item or claim.',
-        isOpen: false
-      },
-      {
-        question: 'What if I need to update or delete my report?',
-        answer: 'Currently, you can\'t edit or delete reports through the app. If you need to make changes, please contact the school\'s Lost & Found office directly or email the FindIt administrator. They can help you update or remove your report.',
-        isOpen: false
-      },
-      {
-        question: 'Can I search for specific items?',
-        answer: 'Yes! Use the search bar on the home page to find items by keyword, category, or location. You can also filter by category (Apparel, Technology, Food Containers, etc.) and location (Cafeteria, Library, Playground, etc.).',
-        isOpen: false
-      },
-      {
-        question: 'What if someone claims my lost item?',
-        answer: 'If someone submits a claim for an item you reported lost, admins will review their claim. They may contact you to verify the claimer\'s proof of ownership. If approved, you\'ll be notified and can arrange pickup.',
+        question: 'When can I claim an item?',
+        answer: 'You can claim only items that are approved and currently available. After submitting a claim request, it stays pending until an admin approves or rejects it.',
         isOpen: false
       },
       {
         question: 'What happens after I submit a claim?',
-        answer: 'After submitting a claim, an admin will review your proof of ownership. If your claim is verified, you\'ll be contacted with instructions on how to pick up the item. The process typically takes 1-2 business days.',
+        answer: 'Admins review your claim details and proof of ownership. If approved, the item status updates to claimed and you can coordinate pickup through the school process.',
         isOpen: false
       },
       {
-        question: 'Is there a mobile version of this app?',
-        answer: 'FindIt is fully responsive and works on all devices including smartphones, tablets, and desktop computers. You can access it from any device with a web browser.',
+        question: 'Who can see my contact information?',
+        answer: 'Contact information is not shown publicly. It is used by admins for verification and communication related to your report or claim.',
+        isOpen: false
+      },
+      {
+        question: 'Does EBHS Lost & Found work on phone and desktop?',
+        answer: 'Yes. The site is responsive and works on mobile, tablet, and desktop browsers, so you can search and report items from any device.',
         isOpen: false
       }
     ];
+  }
+
+  private useDefaultQA() {
+    this.qaItems = this.defaultQAItems();
   }
 
   toggleQA(item: QAItem): void {

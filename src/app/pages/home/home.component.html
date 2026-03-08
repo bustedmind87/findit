@@ -1,6 +1,6 @@
 <main class="home container" id="main-content" role="main" aria-labelledby="home-heading">
-  <h1 id="home-heading">FindIt</h1>
-  <p class="sr-only">FindIt - Help find lost and found items. Search through found items or report lost items.</p>
+  <h1 id="home-heading">EBHS Lost &amp; Found</h1>
+  <p class="sr-only">EBHS Lost &amp; Found - Help find lost and found items. Search through found items or report lost items.</p>
 
   <section class="actions" aria-label="Report buttons">
     <a routerLink="/report" class="btn btn-primary">Report Found Item</a>
@@ -48,13 +48,26 @@
         </select>
         <button class="btn btn-primary" type="submit">Search</button>
       </div>
+
+      <div class="title-suggestions" *ngIf="searchQuery.trim().length >= 3">
+        <p *ngIf="searchingTitles" class="suggestion-hint">Searching items...</p>
+        <ul *ngIf="!searchingTitles && titleSuggestions.length > 0" class="suggestion-list" role="listbox" aria-label="Matching items">
+          <li *ngFor="let item of titleSuggestions" role="option">
+            <a [routerLink]="['/items', item.id]" (click)="onSuggestionSelected()">
+              {{ item.title }}
+              <span class="suggestion-meta">({{ item.type || 'ITEM' }} • {{ statusLabel(item) }})</span>
+            </a>
+          </li>
+        </ul>
+        <p *ngIf="!searchingTitles && titleSuggestions.length === 0" class="suggestion-hint">No matching items found.</p>
+      </div>
     </form>
   </section>
 
   <section aria-labelledby="recent-heading" class="recent">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
       <h2 id="recent-heading">Recent found items</h2>
-      <a routerLink="/approved-unclaimed" class="btn btn-outline-primary">View all approved & unclaimed</a>
+      <a routerLink="/approved-unclaimed" class="btn btn-outline-primary section-action-btn">View all approved items</a>
     </div>
 
     <div class="grid" *ngIf="filteredFoundItems.length > 0; else noRecentItems">
@@ -73,7 +86,7 @@
           <p class="meta">
             {{ item.location || 'Unknown location' }}
             <span *ngIf="item.dateFound"> • Found {{ item.dateFound }}</span>
-            • <span class="status status-approved">APPROVED</span>
+            • <span class="status" [ngClass]="statusClass(item)">{{ statusLabel(item) }}</span>
           </p>
           <p class="desc">{{ item.description || 'No description available.' }}</p>
           <a class="btn btn-outline-primary" [routerLink]="['/items', item.id]">View details</a>
@@ -82,14 +95,14 @@
     </div>
 
     <ng-template #noRecentItems>
-      <p>No found items match your search.</p>
+      <p class="no-found-message">No found items match your search.</p>
     </ng-template>
   </section>
 
   <section aria-labelledby="recent-lost-heading" class="recent">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
       <h2 id="recent-lost-heading">Recent lost items</h2>
-      <a routerLink="/report-lost" class="btn btn-outline-primary">Report a lost item</a>
+      <a routerLink="/report-lost" class="btn btn-outline-primary section-action-btn">Report a lost item</a>
     </div>
 
     <div class="grid" *ngIf="filteredLostItems.length > 0; else noRecentLostItems">
@@ -108,7 +121,7 @@
           <p class="meta">
             {{ item.location || 'Unknown location' }}
             <span *ngIf="item.dateLost"> • Lost {{ item.dateLost }}</span>
-            • <span class="status status-approved">APPROVED</span>
+            • <span class="status" [ngClass]="statusClass(item)">{{ statusLabel(item) }}</span>
           </p>
           <p class="desc">{{ item.description || 'No description available.' }}</p>
           <a class="btn btn-outline-primary" [routerLink]="['/items', item.id]">View details</a>
