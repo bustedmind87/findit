@@ -10,6 +10,23 @@ const LOCAL_ITEMS_KEY = 'fi_local_items';
 export class ItemsService {
   constructor(private api: ApiService) {}
 
+  private isRecoverableApiFailure(apiErr: any): boolean {
+    const status = Number(apiErr?.status ?? 0);
+    const message = String(apiErr?.message || '').toLowerCase();
+
+    // Treat network/proxy/parse failures as recoverable so local fallback can be used.
+    if (status === 0 || status === 502 || status === 503 || status === 504) {
+      return true;
+    }
+
+    // Netlify SPA fallback can return index.html for /api/*, causing parse errors.
+    if (status === 200 && message.includes('http failure during parsing')) {
+      return true;
+    }
+
+    return false;
+  }
+
   private readLocal(): any[] {
     const raw = localStorage.getItem(LOCAL_ITEMS_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -110,8 +127,8 @@ export class ItemsService {
   create(formData: FormData) {
     return this.api.post<Item>('/items', formData).pipe(
       catchError((apiErr) => {
-        // Fallback to local storage only when backend is unreachable (network/proxy error).
-        if (apiErr?.status && apiErr.status !== 0) {
+        // Fallback to local storage only when backend is unreachable (network/proxy/parse error).
+        if (!this.isRecoverableApiFailure(apiErr)) {
           return throwError(() => apiErr);
         }
 
